@@ -1,0 +1,16 @@
+.title {
+  display: flex;
+  justify-content: space-between;
+}
+
+table {
+  td {
+    .actions-wrapper {
+      display: flex;
+      justify-content: space-between;
+      .btn {
+        margin-right: 10px;
+      }
+    }
+  }
+}

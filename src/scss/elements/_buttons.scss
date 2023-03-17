@@ -1,0 +1,30 @@
+.btn {
+  background-color: $primary-color;
+  color: $white;
+  border: 1px solid $primary-color;
+  padding: 10px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+  @include box-shadow(0 4px 6px rgba(50, 50, 93, 0.11));
+  @include transition(all 0.15s ease);
+  &:hover,
+  &:active,
+  &:focus {
+    @include box-shadow(0 7px 14px rgba(50, 50, 93, 0.1));
+    @include transform(translateY(-1px));
+  }
+}
+
+.edit-btn {
+  @extend .btn;
+  color: $success-color;
+  background-color: rgba($success-color, 0.2);
+  border-color: $success-color;
+}
+
+.delete-btn {
+  @extend .btn;
+  color: $warning-color;
+  background-color: rgba($warning-color, 0.1);
+  border-color: $warning-color;
+}
