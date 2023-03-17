@@ -30,8 +30,6 @@ export class ModalService {
       (modal: IModal) => modal.id === id
     );
 
-    console.log('modal', modal);
-
     if (modal) {
       modal.visible = !modal.visible;
     }

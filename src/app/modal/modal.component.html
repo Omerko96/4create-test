@@ -10,15 +10,20 @@
       <span class="fa fa-times" (click)="closeModal()"></span>
     </div>
 
-    <form>
+    <form [formGroup]="userForm" (ngSubmit)="submit()">
       <div class="input-group">
         <label>User Name</label>
-        <input type="text" placeholder="User name" />
+        <input type="text" placeholder="User name" formControlName="name" />
+        <small
+          class="error"
+          *ngIf="userForm.get('name')?.touched && !userForm.get('name')?.valid"
+          >Be sure to enter a user name.</small
+        >
       </div>
 
       <div class="input-group">
         <label>Active / Inactive</label>
-        <select>
+        <select formControlName="active">
           <option value="active" selected>Active</option>
           <option value="inactive">Inactive</option>
         </select>

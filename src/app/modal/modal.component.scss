@@ -38,6 +38,9 @@
         border-radius: 4px;
         @include box-shadow(0 4px 6px rgba(50, 50, 93, 0.11));
       }
+      .error {
+        color: $warning-color;
+      }
     }
     .btn {
       margin-top: 15px;

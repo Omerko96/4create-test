@@ -1,4 +1,5 @@
-import { Component, ElementRef } from '@angular/core';
+import { Component, ElementRef, Input } from '@angular/core';
+import { FormGroup, FormControl, Validators } from '@angular/forms';
 
 import { ModalService } from '../services/modal.service';
 
@@ -9,6 +10,13 @@ import { ModalService } from '../services/modal.service';
 })
 export class ModalComponent {
   public modalId: string = 'add-user';
+
+  public userForm: FormGroup = new FormGroup({
+    name: new FormControl('', [Validators.required]),
+    active: new FormControl('active', [Validators.required]),
+  });
+
+  @Input() usersCount: number | undefined = 0;
 
   constructor(public modalService: ModalService, private el: ElementRef) {}
 
@@ -21,6 +29,17 @@ export class ModalComponent {
   }
 
   public closeModal(): void {
+    this.userForm.reset();
     this.modalService.toggleModal(this.modalId);
+  }
+
+  public submit(): void {
+    if (!this.userForm.valid) return;
+
+    const user = {
+      id: (this.usersCount as number) + 1,
+      name: this.userForm.get('name')?.value,
+      active: this.userForm.get('active')?.value,
+    };
   }
 }

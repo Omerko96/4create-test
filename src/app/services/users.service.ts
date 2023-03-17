@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { startWith } from 'rxjs/operators';
+import { map, startWith } from 'rxjs/operators';
 
 import { IUser } from '../models/user.interface';
 
