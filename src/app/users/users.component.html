@@ -14,12 +14,17 @@
     </tr>
   </thead>
   <tbody>
-    <tr>
-      <td>1</td>
-      <td>John Doe</td>
+    <tr *ngFor="let user of users$ | async">
+      <td>{{ user.id }}</td>
+      <td>{{ user.name }}</td>
       <td>
         <div class="actions-wrapper">
-          <span class="label active-label">Active</span>
+          <span
+            [class]="
+              user.active ? 'label active-label' : 'label inactive-label'
+            "
+            >{{ user.active ? "Active" : "Inactive" }}</span
+          >
           <div class="actions">
             <button class="btn edit-btn">
               <span class="fa fa-pencil"></span>
@@ -31,39 +36,6 @@
         </div>
       </td>
     </tr>
-    <tr>
-      <td>2</td>
-      <td>Jane Doe</td>
-      <td>
-        <div class="actions-wrapper">
-          <span class="label active-label">Active</span>
-          <div class="actions">
-            <button class="btn edit-btn">
-              <span class="fa fa-pencil"></span>
-            </button>
-            <button class="btn delete-btn">
-              <span class="fa fa-trash"></span>
-            </button>
-          </div>
-        </div>
-      </td>
-    </tr>
-    <tr>
-      <td>3</td>
-      <td>Mike Doe</td>
-      <td>
-        <div class="actions-wrapper">
-          <span class="label inactive-label">Inactive</span>
-          <div class="actions">
-            <button class="btn edit-btn">
-              <span class="fa fa-pencil"></span>
-            </button>
-            <button class="btn delete-btn">
-              <span class="fa fa-trash"></span>
-            </button>
-          </div>
-        </div>
-      </td>
-    </tr>
+    <tr></tr>
   </tbody>
 </table>
