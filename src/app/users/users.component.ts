@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { IUser } from '../models/user.interface';
 
-import { Observable } from 'rxjs';
+import { BehaviorSubject, Observable, switchMap } from 'rxjs';
 
 import { ModalService } from '../services/modal.service';
 import { UsersService } from '../services/users.service';
@@ -12,13 +12,25 @@ import { UsersService } from '../services/users.service';
   styleUrls: ['./users.component.scss'],
 })
 export class UsersComponent implements OnInit, OnDestroy {
-  public users$: Observable<IUser[]>;
+  public users$: Observable<IUser[]> = new Observable();
+
+  private refreshUsers$ = new BehaviorSubject<boolean>(true);
+
+  public enableAddUserButton: boolean = false;
 
   constructor(
-    private modalService: ModalService,
+    public modalService: ModalService,
     public usersService: UsersService
   ) {
-    this.users$ = this.usersService.getUsers();
+    this.users$ = this.refreshUsers$.pipe(
+      switchMap(() => {
+        // update enableAddUserButton if users count is less than 5 or there are inactive users
+        this.enableAddUserButton =
+          this.usersService.usersCount < 5 &&
+          this.usersService.inactiveUsersCount === 0;
+        return this.usersService.getUsers();
+      })
+    );
   }
 
   ngOnInit(): void {
@@ -33,5 +45,20 @@ export class UsersComponent implements OnInit, OnDestroy {
     event.preventDefault();
 
     this.modalService.toggleModal('add-user');
+  }
+
+  public refreshUsers(): void {
+    this.refreshUsers$.next(true);
+  }
+
+  public deleteUser(id: number): void {
+    this.usersService.deleteUser(id);
+    this.refreshUsers();
+    this.enableAddUserButton = this.usersService.usersCount < 5;
+  }
+
+  public updateUser(id: number): void {
+    this.usersService.updateUser(id);
+    this.refreshUsers();
   }
 }

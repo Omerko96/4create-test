@@ -1,7 +1,14 @@
-import { Component, ElementRef, Input } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  Input,
+  Output,
+  EventEmitter,
+} from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 
 import { ModalService } from '../services/modal.service';
+import { UsersService } from '../services/users.service';
 
 @Component({
   selector: 'app-modal',
@@ -9,37 +16,49 @@ import { ModalService } from '../services/modal.service';
   styleUrls: ['./modal.component.scss'],
 })
 export class ModalComponent {
+  @Output() refreshUsers: EventEmitter<void> = new EventEmitter<void>();
+
   public modalId: string = 'add-user';
 
   public userForm: FormGroup = new FormGroup({
     name: new FormControl('', [Validators.required]),
-    active: new FormControl('active', [Validators.required]),
+    active: new FormControl('inactive', [Validators.required]),
   });
 
   @Input() usersCount: number | undefined = 0;
 
-  constructor(public modalService: ModalService, private el: ElementRef) {}
+  constructor(
+    public modalService: ModalService,
+    private el: ElementRef,
+    private usersService: UsersService
+  ) {}
 
   ngOnInit(): void {
     document.body.appendChild(this.el.nativeElement);
   }
 
   ngOnDestroy(): void {
-    document.body.removeChild(this.el.nativeElement);
+    this.userForm.reset();
   }
 
   public closeModal(): void {
-    this.userForm.reset();
     this.modalService.toggleModal(this.modalId);
   }
 
   public submit(): void {
-    if (!this.userForm.valid) return;
+    if (!this.userForm.valid) {
+      this.userForm.get('name')?.markAsTouched();
+      return;
+    }
 
     const user = {
       id: (this.usersCount as number) + 1,
       name: this.userForm.get('name')?.value,
-      active: this.userForm.get('active')?.value,
+      active: this.userForm.get('active')?.value === 'active' ? true : false,
     };
+
+    this.usersService.addUser(user);
+    this.refreshUsers.emit();
+    this.closeModal();
   }
 }

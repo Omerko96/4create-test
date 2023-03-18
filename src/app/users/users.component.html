@@ -1,6 +1,11 @@
 <div class="title">
   <h3>Users</h3>
-  <button type="button" class="btn" (click)="openModal($event)">
+  <button
+    type="button"
+    class="btn"
+    (click)="openModal($event)"
+    [disabled]="!enableAddUserButton"
+  >
     Add User
   </button>
 </div>
@@ -26,10 +31,10 @@
             >{{ user.active ? "Active" : "Inactive" }}</span
           >
           <div class="actions">
-            <button class="btn edit-btn">
+            <button class="btn edit-btn" (click)="updateUser(user.id)">
               <span class="fa fa-pencil"></span>
             </button>
-            <button class="btn delete-btn">
+            <button class="btn delete-btn" (click)="deleteUser(user.id)">
               <span class="fa fa-trash"></span>
             </button>
           </div>
@@ -41,4 +46,8 @@
 </table>
 
 <!-- Modal -->
-<app-modal [usersCount]="(users$ | async)?.length"></app-modal>
+<app-modal
+  *ngIf="modalService.isModalVisible('add-user')"
+  [usersCount]="(users$ | async)?.length"
+  (refreshUsers)="refreshUsers()"
+></app-modal>
