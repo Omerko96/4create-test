@@ -9,6 +9,9 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
 
 import { ModalService } from '../services/modal.service';
 import { UsersService } from '../services/users.service';
+import { UsersQuery } from '../state/users.query';
+
+import { UsersStore } from '../state/users.store';
 
 @Component({
   selector: 'app-modal',
@@ -30,7 +33,9 @@ export class ModalComponent {
   constructor(
     public modalService: ModalService,
     private el: ElementRef,
-    private usersService: UsersService
+    private usersService: UsersService,
+    private usersStore: UsersStore,
+    private usersQuery: UsersQuery
   ) {}
 
   ngOnInit(): void {

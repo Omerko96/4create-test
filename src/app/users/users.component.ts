@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { IUser } from '../models/user.interface';
 
-import { BehaviorSubject, Observable, switchMap } from 'rxjs';
+import { BehaviorSubject, Observable, switchMap, of } from 'rxjs';
 
 import { ModalService } from '../services/modal.service';
 import { UsersService } from '../services/users.service';
@@ -22,13 +22,17 @@ export class UsersComponent implements OnInit, OnDestroy {
     public modalService: ModalService,
     public usersService: UsersService
   ) {
+    this.users$ = this.usersService.getUsers();
     this.users$ = this.refreshUsers$.pipe(
       switchMap(() => {
-        // update enableAddUserButton if users count is less than 5 or there are inactive users
-        this.enableAddUserButton =
-          this.usersService.usersCount < 5 &&
-          this.usersService.inactiveUsersCount === 0;
         return this.usersService.getUsers();
+      }),
+      switchMap((users) => {
+        this.enableAddUserButton =
+          users.length < 5 && users.find((user) => user.active === false)
+            ? false
+            : true;
+        return of(users);
       })
     );
   }
@@ -54,7 +58,6 @@ export class UsersComponent implements OnInit, OnDestroy {
   public deleteUser(id: number): void {
     this.usersService.deleteUser(id);
     this.refreshUsers();
-    this.enableAddUserButton = this.usersService.usersCount < 5;
   }
 
   public updateUser(id: number): void {

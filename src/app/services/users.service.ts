@@ -1,54 +1,50 @@
 import { Injectable } from '@angular/core';
 
-import { map, Observable, of } from 'rxjs';
+import { Observable, of } from 'rxjs';
 
 import { IUser } from '../models/user.interface';
+import { UsersQuery } from '../state/users.query';
+import { UsersStore } from '../state/users.store';
 
 @Injectable({
   providedIn: 'root',
 })
 export class UsersService {
-  private users: IUser[] = [
-    {
-      id: 1,
-      name: 'John',
-      active: true,
-    },
-    {
-      id: 2,
-      name: 'Jane',
-      active: true,
-    },
-    {
-      id: 3,
-      name: 'Bob',
-      active: false,
-    },
-  ];
+  private users$: Observable<IUser[]> = of([]);
 
-  public get usersCount(): number {
-    return this.users.length;
-  }
-
-  public get inactiveUsersCount(): number {
-    return this.users.filter((user) => !user.active).length;
-  }
+  constructor(private usersQuery: UsersQuery, private usersStore: UsersStore) {}
 
   public getUsers(): Observable<IUser[]> {
-    return of(this.users);
+    this.users$ = this.usersQuery.getUsers();
+    return this.users$;
   }
 
   public addUser(user: IUser): void {
-    this.users.push(user);
+    this.usersStore.update((state) => {
+      return {
+        ...state,
+        users: [...state.users, user],
+      };
+    });
   }
 
   public deleteUser(id: number): void {
-    this.users = this.users.filter((user) => user.id !== id);
+    this.usersStore.update((state) => {
+      return {
+        ...state,
+        users: state.users.filter((user) => user.id !== id),
+      };
+    });
   }
 
   public updateUser(id: number): void {
-    this.users.map((user) =>
-      user.id === id ? (user.active = !user.active) : user
-    );
+    this.usersStore.update((state) => {
+      return {
+        ...state,
+        users: state.users.map((user) =>
+          user.id === id ? { ...user, active: !user.active } : user
+        ),
+      };
+    });
   }
 }
