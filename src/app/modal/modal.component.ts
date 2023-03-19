@@ -1,17 +1,8 @@
-import {
-  Component,
-  ElementRef,
-  Input,
-  Output,
-  EventEmitter,
-} from '@angular/core';
+import { Component, ElementRef, Input } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 
 import { ModalService } from '../services/modal.service';
 import { UsersService } from '../services/users.service';
-import { UsersQuery } from '../state/users.query';
-
-import { UsersStore } from '../state/users.store';
 
 @Component({
   selector: 'app-modal',
@@ -19,8 +10,6 @@ import { UsersStore } from '../state/users.store';
   styleUrls: ['./modal.component.scss'],
 })
 export class ModalComponent {
-  @Output() refreshUsers: EventEmitter<void> = new EventEmitter<void>();
-
   public modalId: string = 'add-user';
 
   public userForm: FormGroup = new FormGroup({
@@ -33,9 +22,7 @@ export class ModalComponent {
   constructor(
     public modalService: ModalService,
     private el: ElementRef,
-    private usersService: UsersService,
-    private usersStore: UsersStore,
-    private usersQuery: UsersQuery
+    private usersService: UsersService
   ) {}
 
   ngOnInit(): void {
@@ -63,7 +50,6 @@ export class ModalComponent {
     };
 
     this.usersService.addUser(user);
-    this.refreshUsers.emit();
     this.closeModal();
   }
 }

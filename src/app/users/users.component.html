@@ -3,7 +3,7 @@
   <button
     type="button"
     class="btn"
-    (click)="openModal($event)"
+    (click)="openModal()"
     [disabled]="!enableAddUserButton"
   >
     Add User
@@ -49,5 +49,4 @@
 <app-modal
   *ngIf="modalService.isModalVisible('add-user')"
   [usersCount]="(users$ | async)?.length"
-  (refreshUsers)="refreshUsers()"
 ></app-modal>
