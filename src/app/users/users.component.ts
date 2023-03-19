@@ -26,9 +26,9 @@ export class UsersComponent implements OnInit, OnDestroy {
       }),
       map((users) => {
         this.enableAddUserButton =
-          users.length < 5 && users.find((user) => user.active === false)
+          users.length < 5 && (users.find((user) => user.active === false)
             ? false
-            : true;
+            : true);
         return users;
       })
     );
